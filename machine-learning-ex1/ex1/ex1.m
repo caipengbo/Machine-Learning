@@ -120,13 +120,16 @@ end
 
 % Because of the way meshgrids work in the surf command, we need to
 % transpose J_vals before calling surf, or else the axes will be flipped
+% 曲面图
 J_vals = J_vals';
 % Surface plot
 figure;
 surf(theta0_vals, theta1_vals, J_vals)
-xlabel('\theta_0'); ylabel('\theta_1');
+xlabel('\theta_0'); 
+ylabel('\theta_1');
+zlabel('Cost');
 
-% Contour plot
+% Contour plot 轮廓线
 figure;
 % Plot J_vals as 15 contours spaced logarithmically between 0.01 and 100
 contour(theta0_vals, theta1_vals, J_vals, logspace(-2, 3, 20))

@@ -26,7 +26,8 @@ clear ; close all; clc
 data = load('ex2data1.txt');
 
 % 取data的全部行、x取第1、2列   y是取第3列 
-X = data(:, [1, 2]); y = data(:, 3);
+X = data(:, [1, 2]); 
+y = data(:, 3);
 
 %% ==================== Part 1: Plotting ====================
 %  We start the exercise by first plotting the data to understand the 
@@ -35,7 +36,7 @@ X = data(:, [1, 2]); y = data(:, 3);
 fprintf(['Plotting data with + indicating (y = 1) examples and o ' ...
          'indicating (y = 0) examples.\n']);
 
-% 画逻辑回归所需要的图
+% 画逻辑回归所需的图
 plotData(X, y);
 
 % Put some labels 
@@ -60,10 +61,10 @@ pause;
 %  Setup the data matrix appropriately, and add ones for the intercept term
 [m, n] = size(X);
 
-% Add intercept term to x and X_test
+% Add intercept term to x and X_test 加一列1
 X = [ones(m, 1) X];
 
-% Initialize fitting parameters
+% Initialize fitting parameters 初始化参数为0
 initial_theta = zeros(n + 1, 1);
 
 % Compute and display initial cost and gradient

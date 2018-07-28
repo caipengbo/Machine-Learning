@@ -16,8 +16,8 @@ p = zeros(m, 1);
 %
 
 
-
-
+% round 四舍五入函数
+p = round(sigmoid(X * theta));
 
 
 

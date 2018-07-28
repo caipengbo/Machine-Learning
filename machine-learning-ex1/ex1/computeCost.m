@@ -13,7 +13,9 @@ J = 0;
 % Instructions: Compute the cost of a particular choice of theta
 %               You should set J to the cost.
 % X 是数据集
+
 predictions = X * theta;
+% sum是求所有元素的和
 J = 1 / (2*m) * sum((predictions - y) .^ 2)
 
 % =========================================================================

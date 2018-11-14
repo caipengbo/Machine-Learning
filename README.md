@@ -1,5 +1,8 @@
-# Machine-Learning-Programming-Assignments
-This is Machine Learning Course by Andrew Ng Assignments Code in Coursera.
+# About Machine Learning
+- `ml course ex1-4 andrew ng coursera` folder
+  - This is Machine Learning Course by Andrew Ng Assignments Code in Coursera.
+  - Site: https://www.coursera.org/learn/machine-learning/
 
-# The Coursera site
-https://www.coursera.org/learn/machine-learning/
+- `kaggle start`  folder
+  - some `kaggle` beginner competitions
+

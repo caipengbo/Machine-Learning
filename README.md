@@ -1,8 +1,11 @@
 # About Machine Learning
-- `ml course ex1-4 andrew ng coursera` folder
+- `ML-AndrewNG-Coursera` folder
   - This is Machine Learning Course by Andrew Ng Assignments Code in Coursera.
   - Site: https://www.coursera.org/learn/machine-learning/
 
-- `kaggle start`  folder
+- `Kaggle-Projects`  folder
   - some `kaggle` beginner competitions
+
+- `Deep-Learning-AndrewNG--Coursera`folder
+  - This is my personal assignments for the course. The course covers deep learning from begginer level to advanced.
 

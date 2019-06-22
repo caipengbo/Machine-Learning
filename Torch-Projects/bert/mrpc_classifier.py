@@ -10,7 +10,8 @@ import os
 import numpy as np
 import torch
 from torch.utils.data import DataLoader, RandomSampler, SequentialSampler, TensorDataset
-from tqdm import tqdm, trange
+
+from tqdm import tqdm, trange # 进度条
 
 from torch.nn import CrossEntropyLoss, MSELoss
 from scipy.stats import pearsonr, spearmanr
@@ -235,20 +236,6 @@ def acc_and_f1(preds, labels):
     }
 
 
-def pearson_and_spearman(preds, labels):
-    pearson_corr = pearsonr(preds, labels)[0]
-    spearman_corr = spearmanr(preds, labels)[0]
-    return {
-        "pearson": pearson_corr,
-        "spearmanr": spearman_corr,
-        "corr": (pearson_corr + spearman_corr) / 2,
-    }
-
-
-def compute_metrics(task_name, preds, labels):
-    assert len(preds) == len(labels)
-    return acc_and_f1(preds, labels)
-
 
 def fine_tuning_train(processor, tokenizer, model, device, data_dir):
     train_batch_size = 32
@@ -271,7 +258,7 @@ def fine_tuning_train(processor, tokenizer, model, device, data_dir):
 
     train_sampler = RandomSampler(train_data)
 
-    train_dataloader = DataLoader(train_data, sampler=train_sampler, batch_size=train_batch_size)
+    train_dataloader = DataLoader(train_data, sampler=train_sampler, batch_size=train_batch_size, drop_last=True)
 
     num_train_optimization_steps = len(train_dataloader) // num_train_epochs
 
@@ -290,8 +277,6 @@ def fine_tuning_train(processor, tokenizer, model, device, data_dir):
                          t_total=num_train_optimization_steps)
 
     global_step = 0
-    nb_tr_steps = 0
-    tr_loss = 0
 
     logger.info("***** Running training *****")
     logger.info("  Num examples = %d", len(train_examples))
@@ -321,15 +306,15 @@ def fine_tuning_train(processor, tokenizer, model, device, data_dir):
             optimizer.step()
             optimizer.zero_grad()
             global_step += 1
+            logger.info("Loss:" + str(loss.item()))
 
 
 def save_model(model, tokenizer, output_dir):
-    # Save a trained model, configuration and tokenizer
     model_to_save = model.module if hasattr(model, 'module') else model  # Only save the model it-self
 
-    # If we save using the predefined names, we can load using `from_pretrained`
-    torch.save(model_to_save.state_dict(), output_dir + "finetuning_model.bin")
-    model_to_save.config.to_json_file(output_dir + 'finetuning_config.bin')
+    # 注意保存的模型和config的名字(from_pretrain传入dir或自动检索这两个名字)
+    torch.save(model_to_save.state_dict(), output_dir + "pytorch_model.bin")
+    model_to_save.config.to_json_file(output_dir + 'config.json')
     tokenizer.save_vocabulary(output_dir)
 
 
@@ -399,7 +384,7 @@ def evaluate(processor, tokenizer, model, device, data_dir, output_dir):
             writer.write("%s = %s\n" % (key, str(result[key])))
 
 
-def main():
+def train_main():
     output_dir = './mrpc_output/'
     data_dir = './mrpc_data/'
 
@@ -420,12 +405,45 @@ def main():
 
     save_model(model, tokenizer, output_dir)
 
+    # # Load a trained model and vocabulary that you have fine-tuned
+    # model = BertForSequenceClassification.from_pretrained(output_dir, num_labels=num_labels)
+    # tokenizer = BertTokenizer.from_pretrained(output_dir)
+    #
+    # model.to(device)
+
+
+def eval_main():
+    output_dir = './mrpc_output/'
+    origin_model = './bert_models/'
+
+    # 和原始模型对比结果
+    output_dir = origin_model
+
+    data_dir = './mrpc_data/'
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    processor = MrpcProcessor()
+    label_list = processor.get_labels()
+    num_labels = len(label_list)
+
     # Load a trained model and vocabulary that you have fine-tuned
     model = BertForSequenceClassification.from_pretrained(output_dir, num_labels=num_labels)
     tokenizer = BertTokenizer.from_pretrained(output_dir)
-
     model.to(device)
 
+    evaluate(processor, tokenizer, model, device, data_dir, output_dir)
 
 if __name__ == "__main__":
-    main()
+    eval_main()
+
+    # Fine tuning result
+    # acc = 0.7478260869565218
+    # acc_and_f1 = 0.7876377558939689
+    # eval_loss = 0.5303842201828957
+    # f1 = 0.8274494248314161
+
+    # origin result
+    # acc = 0.664927536231884
+    # acc_and_f1 = 0.7318370271688668
+    # eval_loss = 0.6447086135546366
+    # f1 = 0.7987465181058496

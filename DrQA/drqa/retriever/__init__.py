@@ -17,7 +17,7 @@ DEFAULTS = {
     'elastic_url': 'localhost:9200'
 }
 
-
+# 设置默认值，在全局变量 DEFAULTS 中添加一些东西
 def set_default(key, value):
     global DEFAULTS
     DEFAULTS[key] = value

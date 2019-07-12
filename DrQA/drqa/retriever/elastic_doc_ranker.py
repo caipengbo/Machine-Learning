@@ -31,7 +31,7 @@ class ElasticDocRanker(object):
             elastic_url: URL of the ElasticSearch server containing port
             elastic_index: Index name of ElasticSearch
             elastic_fields: Fields of the Elasticsearch index to search in
-            elastic_field_doc_name: Field containing the name of the document (index)
+            elastic_field_doc_name: Field containing the name of the document (index) 文档有个字段代表id
             strict: fail on empty queries or continue (and return empty result)
             elastic_field_content: Field containing the content of document in plaint text
         """
@@ -46,7 +46,7 @@ class ElasticDocRanker(object):
         self.strict = strict
 
     # Elastic Ranker
-
+    # 将文档的id转换成ES的 _id
     def get_doc_index(self, doc_id):
         """Convert doc_id --> doc_index"""
         field_index = self.elastic_field_doc_name
